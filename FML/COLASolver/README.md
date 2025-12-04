@@ -4,6 +4,36 @@ This is a simple Particle-Mesh (PM) N-body code for a wide range of model that i
 
 You can find some documentation [on this page](https://fml.wintherscoming.no/nbodycode.php) or look at the source files.
 
+# Installation with conda
+
+You can install the code and all its dependencies using conda. First make sure you have conda or mamba installed. Then create a new environment with the required packages by running the following script:
+
+```bash
+bash << 'EOF'
+CONDA_EXEC=micromamba
+ENVIRONMENT_NAME="cola-cpp"
+
+# Check if conda is available
+if ! command -v $CONDA_EXEC &> /dev/null; then
+  echo "Conda not found. Please install conda or mamba first."
+  exit 1
+fi
+
+echo "Creating conda environment with MPI-enabled FFTW..."
+$CONDA_EXEC create -n "$ENVIRONMENT_NAME" -c conda-forge \
+"fftw=*=mpi_mpich*" \
+gsl \
+lua \
+healpix_cxx \
+cfitsio \
+mpich \
+mpich-mpicxx \
+cxx-compiler \
+cmake \
+make \
+-y
+```
+
 # Models
 
 The two main concepts in the code is that of a Cosmology and a GravityModel. The former contains all of the background evolution quantities (Hubble function etc.) and the latter everything related to growth of perturbations: LPT growth factors and how to compute forces from the density field. The reason these things are seperate is that it makes it possible to combine different thing while keeping the rest fixed. Adding a new model is as simple as making a new class that inherits from the base class Cosmology or GravityModel and implement the relevant functions.
@@ -38,7 +68,7 @@ The models that are currently implemented are
 
 # Forces
 
-The code computes PM forces. Particles are binned to a grid (free choice of grid size and density assignment method: NGP, CIC, TSC, PCS, PQS, ...) and used fourier transforms to get the forces. The choice of kernel for this is also a free choice (the fiducial option is the "poor-mans Poisson solver" using the continuous Greens function, but other kernels like the ones in Hamming et al., Hockney & Eastwood and GADGET are also included). 
+The code computes PM forces. Particles are binned to a grid (free choice of grid size and density assignment method: NGP, CIC, TSC, PCS, PQS, ...) and used fourier transforms to get the forces. The choice of kernel for this is also a free choice (the fiducial option is the "poor-mans Poisson solver" using the continuous Greens function, but other kernels like the ones in Hamming et al., Hockney & Eastwood and GADGET are also included).
 
 For the modified gravity models that has non-trivial non-linear evolution (a screening mechanism) we offer four ways of including this:
 
@@ -112,7 +142,7 @@ The code can also be set to store the results from the output for post-processin
 
 The fiducial fileformat for the particles is GADGET. If you want the standard gadget format (pos+vel+id) your particle must have an ID field (get/set_id) otherwise it will only ouput positions and velocities. The other option is to output in the internal format. This will dump all the data in the particles to disk and can easily be ready again by the library (see MPIParticles).
 
-# External libraries: 
+# External libraries:
 
 We require FFTW3, GSL and LUA. LUA is only for reading the parameterfiles.
 

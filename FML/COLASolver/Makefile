@@ -3,7 +3,7 @@
 SHELL := /bin/bash
 
 #===================================================
-# Set C++17 compliant compiler. If USE_MPI we use MPICC 
+# Set C++17 compliant compiler. If USE_MPI we use MPICC
 #===================================================
 
 CC      = g++ -std=c++1z -O3 -Wall -Wextra -march=native
@@ -16,7 +16,7 @@ MPICC   = mpicxx -std=c++1z -O3 -Wall -Wextra -march=native
 # Number of dimensions of space
 NDIM_SPACE = 3
 
-# Use MPI 
+# Use MPI
 USE_MPI          = true
 # Use OpenMP threads
 USE_OMP          = true
@@ -43,40 +43,44 @@ USE_CHUNKPIX     = false
 #===================================================
 
 # Main library include (path to folder containin FML/)
-FML_INCLUDE    = $(HOME)/local/FML
+FML_INCLUDE    = $(abspath ../..)
+# Change prefix to e.g. $HOME/local if packages are installed in your system
+PREFIX ?= $(CONDA_PREFIX)
 
 # FFTW
-FFTW_INCLUDE   = $(HOME)/local/include
-FFTW_LIB       = $(HOME)/local/lib
+FFTW_INCLUDE   = $(PREFIX)/include
+FFTW_LIB       = $(PREFIX)/lib
 FFTW_LINK      = -lfftw3
 FFTW_MPI_LINK  = -lfftw3_mpi
-FFTW_OMP_LINK  = -lfftw3_threads
+FFTW_OMP_LINK  = -lfftw3_omp
 
 # GSL
-GSL_INCLUDE    = $(HOME)/local/include
-GSL_LIB        = $(HOME)/local/lib
+GSL_INCLUDE    = $(PREFIX)/include
+GSL_LIB        = $(PREFIX)/lib
 GSL_LINK       = -lgsl -lgslcblas
 
 # LUA
-LUA_INCLUDE    = $(HOME)/local/include
-LUA_LIB        = $(HOME)/local/lib
+LUA_INCLUDE    = $(PREFIX)/include
+LUA_LIB        = $(PREFIX)/lib
 LUA_LINK       = -llua -ldl
 
-# HEALPIX
-HP_INCLUDE     = $(HOME)/local/Healpix_3.82_gcc/include/healpix_cxx/
-HP_LIB         = $(HOME)/local/Healpix_3.82_gcc/lib
-CFITSIO_INCLUDE = $(HOME)/local/include
-CFITSIO_LIB    = $(HOME)/local/lib
-HP_LINK_C      = -lchealpix -lcfitsio
-HP_LINK        = -lhealpix_cxx -lsharp -lcfitsio
+# HEALPIX & CFITSIO (Assuming installed via Conda now)
+HP_INCLUDE      = $(PREFIX)/include/healpix_cxx
+HP_LIB          = $(PREFIX)/lib
+CFITSIO_INCLUDE = $(PREFIX)/include
+CFITSIO_LIB     = $(PREFIX)/lib
+
+# Linking: Order matters! Dependents first.
+HP_LINK_C       = -lchealpix -lcfitsio
+HP_LINK         = -lhealpix_cxx -lsharp -lcfitsio
 
 #===================================================
 # Compile up all library defines from options above
 #===================================================
 
-INC     = -I$(FML_INCLUDE) 
+INC     = -I$(FML_INCLUDE)
 LIB     =
-LINK    = 
+LINK    =
 OPTIONS = -DNDIM_SPACE=$(NDIM_SPACE)
 
 ifeq ($(USE_MPI),true)
@@ -162,6 +166,6 @@ GadgetUtils.o: $(FML_INCLUDE)/FML/GadgetUtils/GadgetUtils.cpp $(FML_INCLUDE)/FML
 ParameterMap.o: $(FML_INCLUDE)/FML/ParameterMap/ParameterMap.cpp $(FML_INCLUDE)/FML/ParameterMap/ParameterMap.h
 FileUtils.o: $(FML_INCLUDE)/FML/FileUtils/FileUtils.cpp $(FML_INCLUDE)/FML/FileUtils/FileUtils.h
 
-%.o: %.cpp 
-	${CC} -c -o $@ $< $(OPTIONS) $(INC) 
+%.o: %.cpp
+	${CC} -c -o $@ $< $(OPTIONS) $(INC)
 
