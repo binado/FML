@@ -17,9 +17,9 @@ all_parameters_must_be_in_file = true
 -- Simulation options
 ------------------------------------------------------------
 -- Label
-simulation_name = "TestSim"
+simulation_name = "test_simulation"
 -- Boxsize of simulation in Mpc/h
-simulation_boxsize = 512.0
+simulation_boxsize = 1024.0
 
 ------------------------------------------------------------
 -- COLA
@@ -41,7 +41,7 @@ if simulation_use_cola then
 end
 
 ------------------------------------------------------------
--- Choose the cosmology 
+-- Choose the cosmology
 ------------------------------------------------------------
 -- Cosmology: LCDM, w0waCDM, DGP, JBD, ... add your own ...
 cosmology_model = "LCDM"
@@ -60,20 +60,20 @@ cosmology_TCMB_kelvin = 2.7255
 -- Hubble paramster
 cosmology_h = 0.671
 -- Primodial amplitude
-cosmology_As = 2.215e-9 
+cosmology_As = 2.215e-9
 -- Spectral index
 cosmology_ns = 0.966
 -- Pivot scale in 1/Mpc
 cosmology_kpivot_mpc = 0.05
 
 -- The w0wa parametrization
-if cosmology_model == "w0waCDM" then 
+if cosmology_model == "w0waCDM" then
   cosmology_w0 = -1.0
   cosmology_wa = 0.0
 end
 
 -- DGP self-accelerating model
-if cosmology_model == "DGP" then 
+if cosmology_model == "DGP" then
   cosmology_dgp_OmegaRC = 0.11642
 end
 
@@ -86,9 +86,9 @@ end
 -- cosmology_JBD_wBD = 100.0
 -- cosmology_JBD_GeffG_today = 1.0
 -- cosmology_JBD_density_parameter_definition = "hi-class"
-if cosmology_model == "JBD" then 
+if cosmology_model == "JBD" then
   -- The JBD parameter (wBD -> infty gives us GR)
-  cosmology_JBD_wBD = 100.0 
+  cosmology_JBD_wBD = 100.0
   -- The value of G today ("should" by unity). We have G_N = G / phi_* where phi_* = (4+2w)/(3+2w).
   -- G_today = G/phi(a=1) so GeffG_today = phi_*/phi(a=1) so if GeffG_today != 1.0
   -- we effectively have a different Newtons constant
@@ -105,14 +105,14 @@ end
 gravity_model = "GR"
 
 -- General Geff/G(a) models (mu-parametrization)
-if gravity_model == "Geff" then 
+if gravity_model == "Geff" then
   -- File with the format [a, Geff/G(a)]
   gravity_model_geff_geffofa_filename = "GeffoverG_of_a.txt"
 end
 
 -- (m(a),beta(a)) models
-if gravity_model == "mbeta" then 
-  
+if gravity_model == "mbeta" then
+
   -- The parameters defining m(a) and beta(a)
   -- In this example implementation we have beta(a) = beta0 a^n, m(a) = m0*H0*a^m
   -- where (beta0, n, m0, m) are the parameters
@@ -133,7 +133,7 @@ if gravity_model == "mbeta" then
 end
 
 -- Hu-Sawicky f(R) model
-if gravity_model == "f(R)" then 
+if gravity_model == "f(R)" then
   -- f_R0 value
   gravity_model_fofr_fofr0 = 1e-5
   -- The index n
@@ -163,7 +163,7 @@ if gravity_model == "f(R)" then
 end
 
 -- Symmetron model
-if gravity_model == "Symmetron" then 
+if gravity_model == "Symmetron" then
   -- Symmetry breaking scalefactor (no fifth-force for a < assb)
   gravity_model_symmetron_assb = 0.333
   -- Coupling strength relative to gravity
@@ -196,7 +196,7 @@ end
 
 -- DGP model (pick LCDM as the cosmology to get the normal branch)
 -- For the self accelerating branch rcH0 must have a negative sign
-if gravity_model == "DGP" then 
+if gravity_model == "DGP" then
   -- The cross-over scale rc*H0/c
   gravity_model_dgp_rcH0overc = 1.0
   -- Solve exact DGP equation using the multigridsolver (slow and mainly for testing)
@@ -216,7 +216,7 @@ if gravity_model == "DGP" then
   -- The fourier scale for which we use the linear solution for k < k*
   -- and the screened solution for k > k*
   gravity_model_screening_linear_scale_hmpc = 0.1
-  
+
   -- Options for the multigrid solver in case we solve exact equation:
   multigrid_solver_residual_convergence = 1e-4
   -- How many Newton-Gauss-Seidel sweeps to do every level
@@ -230,7 +230,7 @@ end
 -- Particles
 ------------------------------------------------------------
 -- Number of CDM+b particles per dimension
-particle_Npart_1D = 128
+particle_Npart_1D = 1024
 -- Factor of how many more particles to allocate space
 particle_allocation_factor = 1.25
 
@@ -249,8 +249,8 @@ output_folder = "output"
 ------------------------------------------------------------
 -- Time-stepping
 ------------------------------------------------------------
--- Number of steps between the outputs (in output_redshifts). 
--- If only one number in the list then its the total number of steps 
+-- Number of steps between the outputs (in output_redshifts).
+-- If only one number in the list then its the total number of steps
 timestep_nsteps = {10}
 -- The time-stepping method: Quinn, Tassev
 timestep_method = "Quinn"
@@ -277,7 +277,7 @@ ic_fix_amplitude = true
 -- Mirror the phases (for amplitude-fixed simulations)
 ic_reverse_phases = false
 -- Type of IC: gaussian, nongaussian, read_particles, read_phases
--- read_particles   (read GADGET file and use that for sim - reconstruct LPT fields if COLA) 
+-- read_particles   (read GADGET file and use that for sim - reconstruct LPT fields if COLA)
 -- read_phases      (read GADGET file and use that to set the phases for the sim)
 ic_random_field_type = "gaussian"
 -- The grid-size used to generate the IC
@@ -287,7 +287,7 @@ ic_nmesh = particle_Npart_1D
 ic_use_gravity_model_GR = false
 -- The LPT order to use for the IC
 ic_LPT_order = 2
--- The type of input: 
+-- The type of input:
 -- powerspectrum    (file with [k (h/Mph) , P(k) (Mpc/h)^3)])
 -- transferfunction (file with [k (h/Mph) , T(k)  Mpc^2)]
 -- transferinfofile (file containing paths to a bunch of T(k,z) files from CAMB)
@@ -298,7 +298,7 @@ ic_input_filename = "input/example_power_spectrum_cb_z0.000.txt"
 -- The redshift of the P(k), T(k) we give as input
 ic_input_redshift = 0.0
 -- The initial redshift of the simulation
-ic_initial_redshift = 20.0
+ic_initial_redshift = 19.0
 -- Normalize wrt sigma8? Otherwise use normalization in input + As etc.
 -- If ic_use_gravity_model_GR then this is the sigma8 value is a corresponding GR universe!
 ic_sigma8_normalization = false
@@ -317,7 +317,7 @@ if ic_random_field_type == "nongaussian" then
 end
 
 -- For reading IC from an external file
--- If COLA then we reconstruct the LPT fields 
+-- If COLA then we reconstruct the LPT fields
 if ic_random_field_type == "read_particles" or ic_random_field_type == "read_phases" then
   -- Path to GADGET files
   ic_reconstruct_gadgetfilepath = "output/snapshot_TestSim_z20.000/gadget_z20.000"
@@ -346,23 +346,23 @@ end
 -- Force calculation
 ------------------------------------------------------------
 -- Grid to use for computing PM forces
-force_nmesh = 128
+force_nmesh = 2 * particle_Npart_1D
 -- Density assignment method: NGP, CIC, TSC, PCS, PQS
 force_density_assignment_method = "CIC"
 -- The kernel to use for D^2 when solving the Poisson equation
 -- Options: (fiducial = continuous, discrete_2pt, discrete_4pt)
-force_greens_function_kernel = "fiducial"
+force_greens_function_kernel = "discrete_2pt"
 -- The kernel to use for D when computing forces (with fourier)
 -- Options: (fiducial = continuous, discrete_2pt, discrete_4pt)
-force_gradient_kernel = "fiducial"
+force_gradient_kernel = "discrete_2pt"
 -- Include the effects of massive neutrinos when computing
 -- the density field (density of mnu is the linear prediction)
 -- Requires: transferinfofile above (we need all T(k,z))
 force_linear_massive_neutrinos = true
 
--- Experimental feature: Use finite difference on the gravitational 
+-- Experimental feature: Use finite difference on the gravitational
 -- potential to compute forces instead of using Fourier transforms.
-force_use_finite_difference_force = false
+force_use_finite_difference_force = true
 force_finite_difference_stencil_order = 4
 
 ------------------------------------------------------------
@@ -438,13 +438,13 @@ fof_buffer_length_mpch = 3.0
 -- Compute power-spectrum when we output
 pofk = true
 -- Gridsize to use for this
-pofk_nmesh = 128
+pofk_nmesh = particle_Npart_1D
 -- Use interlaced grids for alias reduction?
 pofk_interlacing = true
 -- Subtract shotnoise?
-pofk_subtract_shotnoise = false
+pofk_subtract_shotnoise = true
 -- Density assignment method: NGP, CIC, TSC, PCS, PQS, ...
-pofk_density_assignment_method = "PCS"
+pofk_density_assignment_method = "CIC"
 
 ------------------------------------------------------------
 -- Power-spectrum multipole evaluation
@@ -469,7 +469,7 @@ pofk_multipole_density_assignment_method = "PCS"
 bispectrum = false
 -- Gridsize to use for this
 bispectrum_nmesh = 128
--- Number of bins in k. NB: we need to store nbins grids and 
+-- Number of bins in k. NB: we need to store nbins grids and
 -- do nbins^3 integrals so both memory and computationally expensive
 bispectrum_nbins = 10
 -- Use interlaced grids for alias reduction?
@@ -478,4 +478,3 @@ bispectrum_interlacing = true
 bispectrum_subtract_shotnoise = false
 -- Density assignment method: NGP, CIC, TSC, PCS, PQS
 bispectrum_density_assignment_method = "PCS"
-
